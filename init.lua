@@ -98,6 +98,12 @@ do
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ' '
 
+  -- My settings
+  vim.opt.number = true
+  vim.opt.relativenumber = true
+  vim.keymap.set('i', 'jj', '<Esc>')
+  vim.keymap.set('t', '<C-t>', '<C-\\><C-n>', { noremap = true, silent = true })
+
   -- Set to true if you have a Nerd Font installed and selected in the terminal
   vim.g.have_nerd_font = false
 
@@ -686,10 +692,10 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    -- clangd = {},
+    clangd = {},
     -- gopls = {},
-    -- pyright = {},
-    -- rust_analyzer = {},
+    pyright = {},
+    rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
@@ -846,7 +852,7 @@ do
       -- <c-k>: Toggle signature help
       --
       -- See `:help blink-cmp-config-keymap` for defining your own keymap
-      preset = 'default',
+      preset = 'super-tab',
 
       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -971,6 +977,30 @@ do
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   -- require 'custom.plugins'
+end
+
+-- ============================================================
+-- SECTION 10: MY PLUGINS
+-- Personal plugins, ported from the old lazy.nvim spec to vim.pack.
+-- NOTE: vim.pack has no lazy-loading, so these load eagerly
+-- (the old `ft`/`keys` lazy-load hints could not be preserved).
+-- ============================================================
+do
+  -- plenary.nvim: shared dependency (also pulled in by the telescope section)
+  vim.pack.add { gh 'nvim-lua/plenary.nvim' }
+
+  -- claude-code.nvim: run the Claude Code CLI inside Neovim
+  vim.pack.add { gh 'greggh/claude-code.nvim' }
+  require('claude-code').setup()
+
+  -- neogit: a Magit-like git interface
+  vim.pack.add { gh 'NeogitOrg/neogit' }
+  require('neogit').setup { graph_style = 'kitty' }
+
+  -- venv-selector.nvim: pick a Python virtualenv (was `ft = 'python'`)
+  vim.pack.add { gh 'linux-cultist/venv-selector.nvim' }
+  require('venv-selector').setup { options = { notify_user_on_venv_activation = true } }
+  vim.keymap.set('n', '<leader>vs', '<cmd>VenvSelect<cr>', { desc = '[V]env [S]elect' })
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
